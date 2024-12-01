@@ -1,0 +1,179 @@
+erDiagram
+    Country ||--o{ State : has
+    State ||--o{ City : has
+    City ||--o{ Address : contains
+    Address ||--o{ ContactInfo : "used by"
+    
+    ContactInfo ||--o| Candidate : "belongs to"
+    ContactInfo ||--o| Company : "belongs to"
+    ContactInfo ||--o| Employee : "belongs to"
+    
+    Company ||--o{ Employee : employs
+    Company ||--o{ Position : offers
+    
+    Position }|--|| PositionStatus : has
+    Position }|--|| EmploymentType : "is of"
+    Position }|--|| InterviewFlow : follows
+    
+    InterviewFlow ||--o{ InterviewStep : contains
+    InterviewStep }|--|| InterviewType : "is of"
+    
+    Position ||--o{ Application : receives
+    Candidate ||--o{ Application : submits
+    Application ||--o{ Interview : generates
+    
+    Interview }|--|| InterviewStep : "belongs to"
+    Interview }|--|| Employee : "conducted by"
+    
+    Candidate ||--o{ Education : has
+    Candidate ||--o{ WorkExperience : has
+    Candidate ||--o{ Resume : has
+
+    Country {
+        int id PK
+        string name UK
+        string code UK "2 chars"
+    }
+    
+    State {
+        int id PK
+        int countryId FK
+        string name
+        string code "optional"
+    }
+    
+    City {
+        int id PK
+        int stateId FK
+        string name
+    }
+    
+    Address {
+        int id PK
+        string street
+        string postalCode "optional"
+        int cityId FK
+    }
+    
+    ContactInfo {
+        int id PK
+        string email UK
+        string phone "optional"
+        int addressId FK "optional"
+    }
+    
+    Company {
+        int id PK
+        string name
+        int contactInfoId FK
+        string description "optional"
+        string website "optional"
+    }
+    
+    Employee {
+        int id PK
+        string firstName
+        string lastName
+        int companyId FK
+        int contactInfoId FK
+        string role
+        boolean isActive "default true"
+    }
+    
+    Position {
+        int id PK
+        int companyId FK
+        int interviewFlowId FK
+        int statusId FK
+        int employmentTypeId FK
+        string title
+        string description
+        int locationId
+        decimal salaryMin
+        decimal salaryMax
+        datetime applicationDeadline
+    }
+    
+    PositionStatus {
+        int id PK
+        string name UK
+        string description
+    }
+    
+    EmploymentType {
+        int id PK
+        string name UK
+        string description
+    }
+    
+    InterviewFlow {
+        int id PK
+        string description
+    }
+    
+    InterviewStep {
+        int id PK
+        int interviewFlowId FK
+        int interviewTypeId FK
+        string name
+        int orderIndex
+    }
+    
+    InterviewType {
+        int id PK
+        string name UK
+        string description
+    }
+    
+    Application {
+        int id PK
+        int positionId FK
+        int candidateId FK
+        int statusId FK
+        datetime applicationDate "default now"
+    }
+    
+    Interview {
+        int id PK
+        int applicationId FK
+        int interviewStepId FK
+        int employeeId FK
+        datetime interviewDate
+        string result "optional"
+        int score "optional"
+        string notes "optional"
+    }
+    
+    Candidate {
+        int id PK
+        string firstName
+        string lastName
+        int contactInfoId FK
+    }
+    
+    Education {
+        int id PK
+        int candidateId FK
+        string institution
+        string title
+        datetime startDate
+        datetime endDate "optional"
+    }
+    
+    WorkExperience {
+        int id PK
+        int candidateId FK
+        string company
+        string position
+        string description "optional"
+        datetime startDate
+        datetime endDate "optional"
+    }
+    
+    Resume {
+        int id PK
+        int candidateId FK
+        string filePath
+        string fileType
+        datetime uploadDate
+    }
